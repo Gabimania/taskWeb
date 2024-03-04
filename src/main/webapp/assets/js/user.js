@@ -8,20 +8,25 @@ function borrar(idtask){
     var baseUrl = window.location.protocol + "//" + window.location.host + "/taskWeb_war_exploded/api?idtask="+idtask;
 
     fetch(baseUrl, {
-        method: 'GET', // Puedes cambiar este método según tu necesidad (POST, PUT, DELETE, etc.)
+        method: 'GET',
         headers: {
-            //'Content-Type': 'application/json', // Puedes ajustar el tipo de contenido según tu necesidad
-            'Content-Type':'text',
+            'Content-Type': 'application/json',
+            //'Content-Type':'text',
         },
-        // Puedes agregar otros parámetros como body si estás enviando datos
     })
-        .then(response => response.text()) // Procesamos la respuesta como JSON
+        .then(response => response.json())
         .then(data => {
-            document.getElementById("tableTask").innerHTML=data;
-            // console.log(data); // Aquí puedes hacer lo que quieras con los datos
+            let tbody= "";
+            for (const task of data) {
+                tbody+= `<tr><td>${task.idtask}</td><td>${task.title}</td><td>${task.description}</td><td></td><td></td><td>><i class="fa-solid fa-pen-to-square"></i>
+                                <i onclick="borrar(${task.idtask})" class="fa-solid fa-trash"></i></td>`;
+
+            }
+            document.getElementById("tableTask").innerHTML=tbody;
+            console.log(data);
         })
         .catch(error => {
-            console.error('Error:', error); // Manejamos los errores
+            console.error('Error:', error);
         });
 
 

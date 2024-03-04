@@ -3,6 +3,7 @@ package com.gabriel.taskweb.servlets;
 import com.gabriel.taskweb.controller.TaskController;
 import com.gabriel.taskweb.models.Task;
 import com.gabriel.taskweb.models.User;
+import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -31,28 +32,13 @@ public class ApiServlet extends HttpServlet {
             taskController.userLogged = user;
             taskController.deleteTask(idtask);
             List<Task> taskList = taskController.getAllTaskByUser();
-            StringBuilder tbody = new StringBuilder();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+            Gson gson= new Gson();
+            String json = gson.toJson(taskList);
 
-            for (Task task : taskList) {
-                tbody.append("<tr><td>").append(task.getIdtask()).append("</td>")
-                        .append("<td>").append(task.getTitle()).append("</td>")
-                        .append("<td>").append(task.getDescription()).append("</td>")
-                        .append("<td>").append(sdf.format(task.getCreate_time())).append("</td>")
-                        .append("<td>").append(sdf.format(task.getDeadline())).append("</td>")
-                        .append("<td>").append("<i class=\"fa-solid fa-pen-to-square\"></i>")
-                        .append("<i class=\"fa-solid fa-trash\" onClick=\"borrar(").append(task.getIdtask()).append(")\"></i>")
-                        .append("</td></tr>")
-                ;
-
-            }
-            ;
-            if (taskList.isEmpty()) {
-                tbody.append("<td>No hay tareas</td>");
-            }
             PrintWriter out = response.getWriter();
-            out.write(tbody.toString());
-            //out.write("{\"msg\":\"task deleted\"}");
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+            out.write(json);
         }
     }
 }
